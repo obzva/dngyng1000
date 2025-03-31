@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	server "github.com/obzva/dngyng1000"
+	"github.com/obzva/dngyng1000/server"
 )
 
 func main() {

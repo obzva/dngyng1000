@@ -6,15 +6,41 @@ body {
   display: flex;
   justify-content: center;
 
+  min-height: 100vh;
+
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
 
+nav {
+  display: flex;
+  justify-content: space-between;
+}
+
 main {
   margin-top: 128px;
-  padding-left: 24px;
-  padding-right: 24px;
+  flex: 1;
+}
+
+main > ul {
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+main > ul > li {
+  list-style: none;
+}
+
+main > ul > li h2 {
+  margin: 0;
+}
+
+main > ul > li a:link,
+main > ul > li a:visited {
+  text-decoration: none;
 }
 
 h1,
@@ -24,25 +50,27 @@ h3 {
   font-weight: 500;
 }
 
-h1 {
-  font-size: 60px;
-}
-
-h2 {
-  margin-top: 24px;
-  margin-bottom: 16px;
-  font-size: 48px;
-}
-
+h2,
 h3 {
   margin-top: 16px;
   margin-bottom: 8px;
-  font-size: 36px;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 24px;
 }
 
 p,
 p > a {
-  font-size: 24px;
+  font-size: 16px;
 }
 
 footer {
@@ -53,7 +81,14 @@ footer {
 
 .container {
   padding: 24px;
-  max-width: 1024px;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+nav a:link,
+nav a:visited {
+  text-decoration: none;
 }
 
 .logo {
@@ -68,13 +103,16 @@ footer {
   font-size: 36px;
 }
 
-a.logo:link,
-a.logo:visited {
-  text-decoration: none;
-}
-
 .logo-chon {
   margin-left: auto;
+}
+
+.menus {
+  font-size: 24px;
+  align-self: end;
+}
+.description {
+  font-size: 20px;
 }
 
 .date {
@@ -86,31 +124,29 @@ a.logo:visited {
   margin-top: 48px;
 }
 
-.content > p {
-  text-indent: 12px;
+/* @media (prefers-color-scheme: light) { */
+body {
+  background-color: #ebefee;
+  color: #4b413c;
 }
 
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: #ebefee;
-    color: #4b413c;
-  }
-
-  p > a:link {
-    color: #bb6c43;
-  }
-
-  a.logo:link,
-  a.logo:visited {
-    color: #4b413c;
-  }
-
-  .date {
-    color: #bb6c43;
-  }
+p > a:link {
+  color: #bb6c43;
 }
 
-@media (prefers-color-scheme: dark) {
+nav a:link,
+nav a:visited,
+main > ul > li a:link,
+main > ul > li a:visited {
+  color: #4b413c;
+}
+
+.date {
+  color: #bb6c43;
+}
+/* } */
+
+/* @media (prefers-color-scheme: dark) {
   body {
     background-color: #4b413c;
     color: #ebefee;
@@ -128,4 +164,4 @@ a.logo:visited {
   .date {
     color: #99f0da;
   }
-}
+} */

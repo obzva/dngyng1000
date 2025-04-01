@@ -1,15 +1,8 @@
 package server
 
 import (
-	"fmt"
-	"html/template"
 	"net/http"
 	"strings"
-)
-
-var (
-	templates = template.Must(template.ParseFiles("templates/post.html"))
-	postMap   = MustNewPostMap("posts")
 )
 
 func Run() error {
@@ -24,9 +17,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	trimmedPath := strings.TrimPrefix(r.URL.Path, "/posts/")
 	switch trimmedPath {
 	case "":
-		// postListHandler(w, r)
-		fmt.Fprint(w, "not yet")
-		return
+		renderTemplate(w, "posts", postMap.s)
 	default:
 		post, err := postMap.Get(trimmedPath)
 		if err != nil {
@@ -34,12 +25,5 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		renderTemplate(w, "post", post)
-	}
-}
-
-func renderTemplate(w http.ResponseWriter, tmplName string, p *Post) {
-	err := templates.ExecuteTemplate(w, tmplName+".html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

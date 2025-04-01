@@ -1,0 +1,10 @@
+{{template "top" .}}
+  <main>
+    <article>
+      <h1>{{.Title}}</h1>
+      <p class="description">{{.Description}}</p>
+      <p class="date">{{.Date.Format "2006-01-02"}}</p>
+      <div class="content">{{.Body}}</div>
+    </article>
+  </main>
+{{template "bottom" .}}

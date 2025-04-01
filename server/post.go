@@ -16,50 +16,52 @@ import (
 	"github.com/yuin/goldmark/parser"
 )
 
+var postMap = NewPostList()
+
 type Post struct {
-	Title, Description string
-	Date               time.Time
-	Body               template.HTML
+	ID, Title, Description string
+	Date                   time.Time
+	Body                   template.HTML
 }
 
-type PostMap struct {
-	posts map[string]*Post
+type PostList struct {
+	// map of post id to post
+	m map[string]*Post
+	// slice of posts
+	s []*Post
 }
 
-func (pm *PostMap) Get(id string) (*Post, error) {
-	post, ok := pm.posts[id]
+func (pm *PostList) Get(id string) (*Post, error) {
+	post, ok := pm.m[id]
 	if !ok {
 		return nil, fmt.Errorf("post with id %s not found", id)
 	}
 	return post, nil
 }
 
-func MustNewPostMap(dirName string) *PostMap {
-	pm, err := NewPostMap(dirName)
+func NewPostList() *PostList {
+	dirName := "posts"
+	dir, err := os.ReadDir(dirName)
 	if err != nil {
 		panic(err)
 	}
-	return pm
-}
 
-func NewPostMap(dirName string) (*PostMap, error) {
-	dir, err := os.ReadDir(dirName)
-	if err != nil {
-		return nil, err
+	pl := &PostList{
+		m: make(map[string]*Post),
+		s: make([]*Post, 0),
 	}
-	posts := make(map[string]*Post)
+
 	for _, entry := range dir {
 		p, err := getPost(path.Join(dirName, entry.Name()))
 		if err != nil {
-			return nil, err
+			panic(err)
 		}
-		id := strings.ToLower(p.Title)
-		id = strings.ReplaceAll(id, " ", "-")
-		id = url.QueryEscape(id)
 
-		posts[id] = p
+		pl.s = append(pl.s, p)
+		pl.m[p.ID] = p
 	}
-	return &PostMap{posts}, nil
+
+	return pl
 }
 
 // open postfile from fileSystem and return new Post struct
@@ -95,6 +97,10 @@ func newPost(postFile io.Reader) (*Post, error) {
 		return nil, err
 	}
 
+	id := strings.ToLower(title)
+	id = strings.ReplaceAll(id, " ", "-")
+	id = url.QueryEscape(id)
+
 	description, err := assertString(meta["description"])
 	if err != nil {
 		return nil, err
@@ -111,6 +117,7 @@ func newPost(postFile io.Reader) (*Post, error) {
 	}
 
 	return &Post{
+		ID:          id,
 		Title:       title,
 		Description: description,
 		Date:        date,

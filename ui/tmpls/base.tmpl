@@ -1,0 +1,19 @@
+{{define "base"}}
+<!doctype html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'>
+        <title>{{.PageTitle}} - dngyng1000</title>
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'>
+        <link rel='stylesheet' href='/static/main.css'>
+    </head>
+    <body>
+        <header>
+            <h1><a href='/'>Dongyeong Chon</a></h1>
+        </header>
+        <main>
+            {{template "main" .}}
+        </main>
+    </body>
+</html>
+{{end}}

@@ -1,0 +1,14 @@
+{{define "main"}}
+<section>
+    <h2>Posts</h2>
+    {{range .Posts}}
+        <div>
+            <h3><a href='/posts/{{.Slug}}'>{{.Title}}</a></h3>
+            <p>{{.Description}}</p>
+            <p><small>{{.CreatedAt.Format "2006-01-02"}}</small></p>
+        </div>
+    {{else}}
+        <p>OOPS! No posts...</p>
+    {{end}}
+</section>
+{{end}}

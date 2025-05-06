@@ -1,26 +1,20 @@
 package template
 
 import (
+	"bytes"
 	"html/template"
 	"io/fs"
 	"log/slog"
 	"net/http"
 	"path/filepath"
-	"strings"
 
-	"github.com/obzva/dngyng1000/ui"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
+	"github.com/obzva/dngyng1000/internal/ui"
 )
 
-type Template struct {
-	Cache map[string]*template.Template
-}
+type Cache map[string]*template.Template
 
-func New() (*Template, error) {
-	t := &Template{
-		Cache: make(map[string]*template.Template),
-	}
+func NewCache() (Cache, error) {
+	tc := make(Cache)
 
 	pages, err := fs.Glob(ui.Files, "tmpls/pages/*.tmpl")
 	if err != nil {
@@ -35,28 +29,30 @@ func New() (*Template, error) {
 			return nil, err
 		}
 
-		t.Cache[name] = ts
+		tc[name] = ts
 	}
 
-	return t, nil
+	return tc, nil
 }
 
-func (t *Template) Render(logger *slog.Logger, w http.ResponseWriter, r *http.Request, name string) {
-	ts, ok := t.Cache[name]
+func (c Cache) Render(logger *slog.Logger, w http.ResponseWriter, r *http.Request, tmplFileName string, data any) {
+	ts, ok := c[tmplFileName]
 	if !ok {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	caser := cases.Title(language.English)
-	pageTitle := caser.String(strings.TrimSuffix(name, ".tmpl"))
+	// buffer for trial render
+	// it helps us to catch runtime error
+	// if trial render onto this buffer succeed then we render the content onto http.ResponseWriter
+	var b bytes.Buffer
 
-	err := ts.ExecuteTemplate(w, "base", struct {
-		PageTitle string
-	}{
-		PageTitle: pageTitle,
-	})
-	if err != nil {
+	if err := ts.ExecuteTemplate(&b, "base", data); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	if _, err := b.WriteTo(w); err != nil {
 		logger.Error(err.Error())
 	}
 }

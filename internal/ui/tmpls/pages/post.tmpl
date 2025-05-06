@@ -1,0 +1,13 @@
+{{define "main"}}
+<section>
+    {{with .Post}}
+        <h2>{{.Title}}</h2>
+        <p>{{.Description}}</p>
+        <p><small>created at: {{.CreatedAt.Format "2006-01-02"}}</small></p>
+        {{if ne .CreatedAt .UpdatedAt}}
+            <p><small><b>updated at: {{.UpdatedAt.Format "2006-01-02"}}</b></small></p>
+        {{end}}
+        {{.Body}}
+    {{end}}
+</section>
+{{end}}
